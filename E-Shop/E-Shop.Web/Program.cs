@@ -1,6 +1,3 @@
-using E_Shop.DataAccess.Data;
-using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

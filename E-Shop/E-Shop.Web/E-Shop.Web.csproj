@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\E-Shop.DataAccess\E-Shop.DataAccess.csproj" />
+    <ProjectReference Include="..\E-Shop.Domain\E-Shop.Domain.csproj" />
   </ItemGroup>
 
 </Project>
