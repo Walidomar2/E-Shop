@@ -1,4 +1,4 @@
-﻿using E_Shop.Domain;
+﻿using E_Shop.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Shop.DataAccess.Data

@@ -1,4 +1,5 @@
 ﻿using E_Shop.DataAccess.Data;
+using E_Shop.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Shop.Web.Controllers
