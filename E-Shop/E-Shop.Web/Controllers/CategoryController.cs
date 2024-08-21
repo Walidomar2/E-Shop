@@ -1,4 +1,5 @@
 ﻿using E_Shop.DataAccess.Data;
+using E_Shop.Domain.Interfaces;
 using E_Shop.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,15 +7,15 @@ namespace E_Shop.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryController(ApplicationDbContext context, IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            var categorise = _context.Categories.ToList();
+            var categorise = _unitOfWork.Category.GetAll();
             return View(categorise);
         }
 
@@ -30,8 +31,8 @@ namespace E_Shop.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Categories.Add(category);
-                _context.SaveChanges();
+                _unitOfWork.Category.Add(category);
+                _unitOfWork.Save();
                 TempData["Created"] = "Created Successfully";
                 return RedirectToAction("Index");
             }
@@ -46,7 +47,7 @@ namespace E_Shop.Web.Controllers
                 return NotFound();
             }
             
-            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            var category = _unitOfWork.Category.Get(c => c.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -61,8 +62,8 @@ namespace E_Shop.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Categories.Update(category);
-                _context.SaveChanges();
+                _unitOfWork.Category.Update(category);
+                _unitOfWork.Save();
                 TempData["Edited"] = "Edited Successfully";
                 return RedirectToAction("Index");
             }
@@ -77,7 +78,7 @@ namespace E_Shop.Web.Controllers
                 return NotFound();
             }
 
-            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            var category = _unitOfWork.Category.Get(c => c.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -89,13 +90,13 @@ namespace E_Shop.Web.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePost(int id)
         {
-            var category = _context.Categories.FirstOrDefault(x => x.Id == id);
+            var category = _unitOfWork.Category.Get(x => x.Id == id);
 
             if (category == null)
                 return NotFound();
 
-            _context.Categories.Remove(category);
-            _context.SaveChanges();
+            _unitOfWork.Category.Remove(category);
+            _unitOfWork.Save();
             TempData["Deleted"] = "Deleted Successfully";
             return RedirectToAction(nameof(Index));
         }
