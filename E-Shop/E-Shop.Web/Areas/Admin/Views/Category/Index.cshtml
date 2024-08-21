@@ -24,13 +24,13 @@
             <td>@item.CreatedTime</td>
 
             <td>
-                <a class="btn btn-success" href="/Category/Edit/@item.Id">Edit</a>
-                <a class="btn btn-danger" href="/Category/Delete/@item.Id">Delete</a>
+                <a asp-controller="Category" asp-action="Edit" asp-route-id="@item.Id"  class="btn btn-success">Edit</a>
+                <a asp-controller="Category" asp-action="Delete" asp-route-id="@item.Id"  class="btn btn-danger">Delete</a>
             </td>
         </tr>
     }
 </table>
 <br />
 <div>
-    <a class="btn btn-primary" href="/Category/Create">Create</a>
+    <a asp-controller="Category" asp-action="Create" class="btn btn-primary">Create</a>
 </div>

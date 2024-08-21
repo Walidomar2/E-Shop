@@ -3,8 +3,9 @@ using E_Shop.Domain.Interfaces;
 using E_Shop.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace E_Shop.Web.Controllers
+namespace E_Shop.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -20,8 +21,8 @@ namespace E_Shop.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create() 
-        { 
+        public IActionResult Create()
+        {
             return View();
         }
 
@@ -46,7 +47,7 @@ namespace E_Shop.Web.Controllers
             {
                 return NotFound();
             }
-            
+
             var category = _unitOfWork.Category.Get(c => c.Id == id);
             if (category == null)
             {
