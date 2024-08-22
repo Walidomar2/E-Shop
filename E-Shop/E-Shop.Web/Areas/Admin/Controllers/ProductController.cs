@@ -22,8 +22,13 @@ namespace E_Shop.Web.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            var products = _unitOfWork.Product.GetAll();
-            return View(products);
+            return View();
+        }
+
+        public IActionResult GetData()
+        {
+            var products = _unitOfWork.Product.GetAll(experession: "Category");
+            return Json(new { data = products });  
         }
 
         [HttpGet]
