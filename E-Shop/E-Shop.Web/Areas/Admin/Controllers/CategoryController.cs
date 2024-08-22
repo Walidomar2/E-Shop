@@ -10,7 +10,7 @@ namespace E_Shop.Web.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ApplicationDbContext context, IUnitOfWork unitOfWork)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
