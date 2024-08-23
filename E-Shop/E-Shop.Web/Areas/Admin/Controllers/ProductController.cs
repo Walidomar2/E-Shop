@@ -4,6 +4,7 @@ using E_Shop.Domain.Models;
 using E_Shop.Domain.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace E_Shop.Web.Areas.Admin.Controllers
 {
@@ -57,18 +58,6 @@ namespace E_Shop.Web.Areas.Admin.Controllers
                 string imgName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 string imgPath = Path.Combine(wwwRootPath, @"Images\Products");
 
-                // in case you update the image
-                if (!string.IsNullOrEmpty(productVM.Product.Img))
-                {
-                    var oldImgPath =
-                        Path.Combine(wwwRootPath, productVM.Product.Img.TrimStart('\\'));
-
-                    if (System.IO.File.Exists(oldImgPath))
-                    {
-                        System.IO.File.Delete(oldImgPath);
-                    }
-                }
-
                 using (var fileStream = new FileStream(Path.Combine(imgPath, imgName), FileMode.Create))
                 {
                     file.CopyTo(fileStream);
@@ -96,27 +85,60 @@ namespace E_Shop.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var product = _unitOfWork.Product.Get(c => c.Id == id);
-            if (product == null)
+            ProductVM productVM = new ProductVM()
             {
-                return NotFound();
-            }
+                Product = _unitOfWork.Product.Get(p => p.Id == id),
+                CategoryList = _unitOfWork.Category.GetAll().
+                    Select(x => new SelectListItem
+                    {
+                        Text = x.Name,
+                        Value = x.Id.ToString()
+                    })
+            };
 
-            return View(product);
+            return View(productVM);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Product product)
+        public IActionResult Edit(ProductVM productVM, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Update(product);
+                // Handle image upload if a new file is provided
+                if (file != null)
+                {
+                    string wwwRootPath = _webHostEnvironment.WebRootPath;
+                    string imgName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string imgPath = Path.Combine(wwwRootPath, @"Images\Products");
+
+                    if (!string.IsNullOrEmpty(productVM.Product.Img))
+                    {
+                        var oldImgPath = Path.Combine(wwwRootPath, productVM.Product.Img.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImgPath))
+                        {
+                            System.IO.File.Delete(oldImgPath);
+                        }
+                    }
+
+                    using (var fileStream = new FileStream(Path.Combine(imgPath, imgName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+
+                    productVM.Product.Img = @"\Images\Products\" + imgName;
+                }
+
+                // Update product details
+                _unitOfWork.Product.Update(productVM.Product);
                 _unitOfWork.Save();
+
                 TempData["Edited"] = "Edited Successfully";
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
-            return View();
+
+            // Return the view with validation errors if ModelState is invalid
+            return View(productVM.Product);
         }
 
         [HttpGet]

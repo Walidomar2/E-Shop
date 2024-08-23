@@ -20,11 +20,11 @@ namespace E_Shop.DataAccess.Repositories
 
             if (productModel != null)
             {
-                productModel.Description = product.Description;
                 productModel.Name = product.Name;
+                productModel.Description = product.Description;
                 productModel.Price = product.Price;
                 productModel.Img = product.Img; 
-
+                productModel.CategoryId = product.CategoryId;
             }
         }
     }
