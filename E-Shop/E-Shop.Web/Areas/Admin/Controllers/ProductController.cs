@@ -141,35 +141,27 @@ namespace E_Shop.Web.Areas.Admin.Controllers
             return View(productVM.Product);
         }
 
-        [HttpGet]
-        public IActionResult Delete(int id)
-        {
-            if (id == 0)
-            {
-                return NotFound();
-            }
+      
 
-            var product = _unitOfWork.Product.Get(c => c.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePost(int id)
+        [HttpDelete, ActionName("Delete")]
+        public IActionResult DeletePost(int? id)
         {
             var product = _unitOfWork.Product.Get(x => x.Id == id);
 
             if (product == null)
-                return NotFound();
+                return Json(new {success = false, message = "Error While Deleting"});
+
 
             _unitOfWork.Product.Remove(product);
+            var oldImgPath = Path.Combine(_webHostEnvironment.WebRootPath, product.Img.TrimStart('\\'));
+            if (System.IO.File.Exists(oldImgPath))
+            {
+                System.IO.File.Delete(oldImgPath);
+            }
+         
             _unitOfWork.Save();
-            TempData["Deleted"] = "Deleted Successfully";
-            return RedirectToAction(nameof(Index));
+
+            return Json(new { success = true, message = "File has been Deleted" });
         }
 
     }
