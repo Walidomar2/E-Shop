@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-Shop.DataAccess", "E-Shop.DataAccess\E-Shop.DataAccess.csproj", "{A06CBDF0-A0C9-4604-A0D7-D92B30D8D301}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E-Shop.DataAccess", "E-Shop.DataAccess\E-Shop.DataAccess.csproj", "{A06CBDF0-A0C9-4604-A0D7-D92B30D8D301}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-Shop.Domain", "E-Shop.Domain\E-Shop.Domain.csproj", "{F4E6AF35-97F9-45AE-8464-07F1F93465C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E-Shop.Domain", "E-Shop.Domain\E-Shop.Domain.csproj", "{F4E6AF35-97F9-45AE-8464-07F1F93465C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-Shop.Web", "E-Shop.Web\E-Shop.Web.csproj", "{341665C3-840F-4112-9277-60C71D6B9E81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E-Shop.Web", "E-Shop.Web\E-Shop.Web.csproj", "{341665C3-840F-4112-9277-60C71D6B9E81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
