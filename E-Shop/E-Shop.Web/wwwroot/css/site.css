@@ -20,3 +20,14 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.custom-background {
+    background-image: url('/Images/electronics-store-logo-design-template-vector.jpg'); /* Path to your background image */
+    background-size: cover; /* Make the image cover the entire container */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Don't repeat the image */
+    height: 500px; /* Set the height of the background section */
+    width: 100%; /* Make the background stretch the entire width */
+    text-align: center; /* Center the text horizontally */
+    color: white; /* Set the text color for better readability */
+}

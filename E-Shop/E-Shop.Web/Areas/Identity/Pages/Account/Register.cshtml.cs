@@ -117,6 +117,7 @@ namespace E_Shop.Web.Areas.Identity.Pages.Account
                 _roleManager.CreateAsync(new IdentityRole(SD.Edit)).GetAwaiter().GetResult();
                 _roleManager.CreateAsync(new IdentityRole(SD.Customer)).GetAwaiter().GetResult();
             }
+            ViewData["HeaderTitle"] = "Registration Page";
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }

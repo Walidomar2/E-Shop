@@ -16,6 +16,7 @@ namespace E_Shop.Web.Areas.Customer.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            ViewData["HeaderTitle"] = "Products Home";
             var products = _unitOfWork.Product.GetAll();
             return View(products);
         }
@@ -28,7 +29,8 @@ namespace E_Shop.Web.Areas.Customer.Controllers
                 Product = _unitOfWork.Product.Get(p => p.Id == id, experession: "Category"),
                 Count = 1
             };
-           
+
+            ViewData["HeaderTitle"] = "Your Product Details";
             return View(cart);
         }
     }
