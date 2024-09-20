@@ -2,8 +2,8 @@
 {
     public static class SD
     {
-        public static string Admin = "Admin";
-        public static string Edit = "Editor";
-        public static string Customer = "Customer";
+        public const string Admin = "Admin";
+        public const string Edit = "Editor";
+        public const string Customer = "Customer";
     }
 }
