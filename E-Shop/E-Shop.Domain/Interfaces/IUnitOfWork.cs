@@ -10,6 +10,7 @@ namespace E_Shop.Domain.Interfaces
     {
         ICategoryRepository Category { get; }
         IProductRepository Product { get; }
+        IShoppingCartRepository ShoppingCart { get;}
         int Save();
     }
 }

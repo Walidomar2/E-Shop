@@ -24,7 +24,7 @@ namespace E_Shop.Web.Areas.Customer.Controllers
         [HttpGet]
         public IActionResult Details(int id) 
         {
-            ShopCart cart = new ShopCart()
+            ShoppingCart cart = new ShoppingCart()
             {
                 Product = _unitOfWork.Product.Get(p => p.Id == id, experession: "Category"),
                 Count = 1
