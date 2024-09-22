@@ -47,7 +47,19 @@ namespace E_Shop.Web.Areas.Customer.Controllers
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             shoppingCart.ApplicationUserId = claim.Value;
 
-            _unitOfWork.ShoppingCart.Add(shoppingCart); 
+            ShoppingCart cartObj = _unitOfWork.ShoppingCart.Get(
+                u => u.ApplicationUserId == claim.Value && u.ProductId == shoppingCart.ProductId
+                );
+
+            if( cartObj == null )
+            {
+                _unitOfWork.ShoppingCart.Add(shoppingCart);
+            }
+            else
+            {
+                _unitOfWork.ShoppingCart.IncreaseCount(cartObj, shoppingCart.Count);
+            }
+
             _unitOfWork.Save();  
 
             return RedirectToAction("index");
