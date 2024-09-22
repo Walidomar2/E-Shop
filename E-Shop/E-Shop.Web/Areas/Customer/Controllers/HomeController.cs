@@ -1,6 +1,8 @@
 ﻿using E_Shop.Domain.Interfaces;
 using E_Shop.Domain.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace E_Shop.Web.Areas.Customer.Controllers
 {
@@ -22,16 +24,33 @@ namespace E_Shop.Web.Areas.Customer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int id) 
+        public IActionResult Details(int productId) 
         {
             ShoppingCart cart = new ShoppingCart()
             {
-                Product = _unitOfWork.Product.Get(p => p.Id == id, experession: "Category"),
+                ProductId = productId,
+                Product = _unitOfWork.Product.Get(p => p.Id == productId, experession: "Category"),
                 Count = 1
             };
 
             ViewData["HeaderTitle"] = "Your Product Details";
             return View(cart);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public IActionResult Details(ShoppingCart shoppingCart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            shoppingCart.ApplicationUserId = claim.Value;
+
+            _unitOfWork.ShoppingCart.Add(shoppingCart); 
+            _unitOfWork.Save();  
+
+            return RedirectToAction("index");
         }
     }
 }
