@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace E_Shop.DataAccess.Repositories
 {
-    public class CategoryRepository : Repository<Category>, ICategoryRepository
+    public class CategoryRepository : Repository<Category>, IOrderHeaderRepository
     {
         private readonly ApplicationDbContext _context;
 

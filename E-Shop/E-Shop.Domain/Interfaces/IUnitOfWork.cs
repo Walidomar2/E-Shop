@@ -8,9 +8,11 @@ namespace E_Shop.Domain.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        ICategoryRepository Category { get; }
+        IOrderHeaderRepository Category { get; }
         IProductRepository Product { get; }
         IShoppingCartRepository ShoppingCart { get;}
+        IOrderDetailRepository OrderDetail { get; }
+        IOrderHeaderRepository OrderHeader { get; }
         int Save();
     }
 }
