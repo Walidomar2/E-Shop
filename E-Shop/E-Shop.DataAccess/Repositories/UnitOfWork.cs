@@ -7,13 +7,12 @@ namespace E_Shop.DataAccess.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        public IOrderHeaderRepository Category { get; private set; }
-
+        public ICategoryRepository Category { get; private set; }
         public IProductRepository Product {  get; private set; }
         public IShoppingCartRepository ShoppingCart {  get; private set; }
         public IOrderDetailRepository OrderDetail { get; private set; }
         public IOrderHeaderRepository OrderHeader { get; private set; }
-
+        public IApplicationUserRepository ApplicationUser { get; private set; }
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -21,7 +20,8 @@ namespace E_Shop.DataAccess.Repositories
             Product = new ProductRepository(context);
             ShoppingCart = new ShoppingCartRepository(context);
             OrderDetail = new OrderDetailRepository(context);
-            OrderHeader = new OrderHeaderRepository(context);   
+            OrderHeader = new OrderHeaderRepository(context);
+            ApplicationUser = new ApplicationUserRepository(context);
         }
 
         public void Dispose()
