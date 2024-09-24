@@ -33,9 +33,46 @@ namespace E_Shop.Web.Areas.Customer.Controllers
 
             foreach (var cart in ShoppingCartVM.CartList)
             { 
-                ShoppingCartVM.TotalCarts = (cart.Count * cart.Product.Price);
+                ShoppingCartVM.TotalCarts += (cart.Count * cart.Product.Price);
             }
             return View(ShoppingCartVM);
         }
+
+        public IActionResult Plus(int cartid)
+        {
+            var shoppingcart = _unitOfWork.ShoppingCart.Get(x => x.Id == cartid);
+
+            _unitOfWork.ShoppingCart.IncreaseCount(shoppingcart, 1);
+            _unitOfWork.Save();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Minus(int cartid)
+        {
+            var shoppingcart = _unitOfWork.ShoppingCart.Get(x => x.Id == cartid);
+
+            if (shoppingcart.Count <= 1)
+            {
+                _unitOfWork.ShoppingCart.Remove(shoppingcart);
+                _unitOfWork.Save();
+                return RedirectToAction("Index","Home");
+            } 
+            else
+            {
+                _unitOfWork.ShoppingCart.DecreaseCount(shoppingcart, 1);
+            }
+
+            _unitOfWork.Save();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Remove(int cartid)
+        {
+            var shoppingcart = _unitOfWork.ShoppingCart.Get(x => x.Id == cartid);
+            _unitOfWork.ShoppingCart.Remove(shoppingcart);
+            _unitOfWork.Save();
+            return RedirectToAction("Index");
+        } 
     }
 }
