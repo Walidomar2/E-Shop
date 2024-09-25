@@ -1,8 +1,10 @@
-﻿using E_Shop.Domain.Interfaces;
+﻿using E_Shop.DataAccess.Repositories;
+using E_Shop.Domain.Interfaces;
 using E_Shop.Domain.ViewModels;
 using E_Shop.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace E_Shop.Web.Areas.Admin.Controllers
 {
@@ -62,6 +64,63 @@ namespace E_Shop.Web.Areas.Admin.Controllers
 			TempData["Edited"] = "Edited Successfully";
 
 			return RedirectToAction("Details","Order",new {orderid = orderFromDB.Id});
-        }  
-    }
+        }
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult StartProccess()
+		{
+            _unitOfWork.OrderHeader.UpdateOrderStatus(OrderVM.OrderHeader.Id, SD.Proccessing, null);
+			_unitOfWork.Save();
+
+			TempData["Edited"] = "Status Changed Successfully";
+
+			return RedirectToAction("Details", "Order", new { orderid = OrderVM.OrderHeader.Id });
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult StartShip()
+		{
+            var orderFromDB = _unitOfWork.OrderHeader.Get(u => u.Id == OrderVM.OrderHeader.Id);
+            orderFromDB.Carrier = OrderVM.OrderHeader.Carrier;
+            orderFromDB.OrderStatus = SD.Shipped;
+            orderFromDB.ShippingDate = DateTime.Now;
+            _unitOfWork.OrderHeader.Update(orderFromDB);
+            _unitOfWork.Save();
+
+			TempData["Edited"] = "Order Shipped Successfully";
+
+			return RedirectToAction("Details", "Order", new { orderid = OrderVM.OrderHeader.Id });
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public IActionResult CancelOrder()
+		{
+			var orderfromdb = _unitOfWork.OrderHeader.Get(u => u.Id == OrderVM.OrderHeader.Id);
+			if (orderfromdb.PaymentStatus == SD.Approve)
+			{
+				var option = new RefundCreateOptions
+				{
+					Reason = RefundReasons.RequestedByCustomer,
+					PaymentIntent = orderfromdb.PaymentIntentId
+				};
+
+				var service = new RefundService();
+				Refund refund = service.Create(option);
+
+				_unitOfWork.OrderHeader.UpdateOrderStatus(orderfromdb.Id, SD.Cancelled, SD.Refund);
+			}
+			else
+			{
+				_unitOfWork.OrderHeader.UpdateOrderStatus(orderfromdb.Id, SD.Cancelled, SD.Cancelled);
+			}
+			_unitOfWork.Save();
+
+			TempData["Update"] = "Order has Cancelled Successfully";
+			return RedirectToAction("Details", "Order", new { orderid = OrderVM.OrderHeader.Id });
+		}
+
+	}
 }
