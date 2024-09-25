@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.PageTitle = "Orders Management";
+    ViewBag.CardTitle = "Orders List";
+    Layout = "~/Views/Shared/_Dashboard.cshtml";
+}
+
+
+
+<table id="mytable" class="table table-hover" width="100%">
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Name</td>
+            <td style="text-align: left">PhoneNumber</td>
+            <td style="text-align: left">Email</td>
+            <td>OrderStatus</td>
+            <td style="text-align: left">Total</td>
+            <td>Actions</td>
+        </tr>
+    </thead>
+</table>
+<br />
+<div>
+    <a asp-controller="Product" asp-action="Create" class="btn btn-primary">Create</a>
+</div>
+
+@section Scripts {
+    <script src="~/js/order.js"></script>
+}
