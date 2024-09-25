@@ -25,9 +25,11 @@ namespace E_Shop.DataAccess.Repositories
         public void UpdateOrderStatus(int id, string OrderStatus, string PaymentStatus)
         {
             var orderFromDB = _context.OrderHeaders.FirstOrDefault(x => x.Id == id);
+
             if (orderFromDB != null)
             {
                 orderFromDB.OrderStatus = OrderStatus;
+                orderFromDB.PaymentDate = DateTime.Now;
                 if (PaymentStatus != null)
                 {
                     orderFromDB.PaymentStatus = PaymentStatus;
