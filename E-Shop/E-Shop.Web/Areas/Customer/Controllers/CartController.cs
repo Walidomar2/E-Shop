@@ -15,14 +15,11 @@ namespace E_Shop.Web.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-		private readonly IConfiguration _configuration;
-
 		public ShoppingCartVM ShoppingCartVM { get; set; }
 
-        public CartController(IUnitOfWork unitOfWork,IConfiguration configuration)
+        public CartController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -152,10 +149,7 @@ namespace E_Shop.Web.Areas.Customer.Controllers
                 _unitOfWork.Save();
             }
 
-			var stripeSecretKey = _configuration["Stripe:SecretKey"];
-
-			StripeConfiguration.ApiKey = stripeSecretKey;
-			var domain = "https://localhost:7020/";
+            var domain = "https://localhost:7168/";
             var options = new SessionCreateOptions
             {
                 LineItems = new List<SessionLineItemOptions>(),
@@ -182,15 +176,35 @@ namespace E_Shop.Web.Areas.Customer.Controllers
                 options.LineItems.Add(sessionlineoption);
             }
 
-
             var service = new SessionService();
             Session session = service.Create(options);
             ShoppingCartVM.OrderHeader.SessionId = session.Id;
+            ShoppingCartVM.OrderHeader.PaymentIntentId = session.PaymentIntentId;
 
             _unitOfWork.Save();
 
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
+        }
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            ViewData["HeaderTitle"] = "Your Order Placed";
+            OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id);
+            var service = new SessionService();
+            Session session = service.Get(orderHeader.SessionId);
+
+            if (session.PaymentStatus.ToLower() == "paid")
+            {
+                _unitOfWork.OrderHeader.UpdateOrderStatus(id, SD.Approve, SD.Approve);
+                orderHeader.PaymentIntentId = session.PaymentIntentId;
+                _unitOfWork.Save();
+            }
+            List<ShoppingCart> shoppingcarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+            
+            _unitOfWork.ShoppingCart.RemoveRange(shoppingcarts);
+            _unitOfWork.Save();
+            return View(id);
         }
     }
 }
