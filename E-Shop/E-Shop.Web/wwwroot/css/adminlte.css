@@ -53010,3 +53010,15 @@ a.text-muted:hover {
   border-color: #4b545c !important;
 }
 /*# sourceMappingURL=adminlte.css.map */
+
+.pagination-lg .page-link {
+    border-radius: 50px;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+    .pagination-lg .page-link:hover {
+        background-color: #343a40;
+        color: #fff;
+    }

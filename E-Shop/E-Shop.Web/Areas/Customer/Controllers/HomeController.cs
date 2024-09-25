@@ -3,6 +3,7 @@ using E_Shop.Domain.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using X.PagedList;
 
 namespace E_Shop.Web.Areas.Customer.Controllers
 {
@@ -16,10 +17,13 @@ namespace E_Shop.Web.Areas.Customer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
+            var pageNumber = page ?? 1;
+            int pageSize = 8;
+
             ViewData["HeaderTitle"] = "Products Home";
-            var products = _unitOfWork.Product.GetAll();
+            var products = _unitOfWork.Product.GetAll().ToPagedList(pageNumber,pageSize);
             return View(products);
         }
 
