@@ -1,5 +1,6 @@
 ﻿using E_Shop.Domain.Interfaces;
 using E_Shop.Domain.ViewModels;
+using E_Shop.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -58,13 +59,18 @@ namespace E_Shop.Web.Areas.Customer.Controllers
             if( cartObj == null )
             {
                 _unitOfWork.ShoppingCart.Add(shoppingCart);
+               
+               
             }
             else
             {
                 _unitOfWork.ShoppingCart.IncreaseCount(cartObj, shoppingCart.Count);
+               
             }
+            _unitOfWork.Save();
+            HttpContext.Session.SetInt32(SD.SessionKey,
+                   _unitOfWork.ShoppingCart.GetAll(x => x.ApplicationUserId == claim.Value).ToList().Count());
 
-            _unitOfWork.Save();  
 
             return RedirectToAction("index");
         }

@@ -48,6 +48,10 @@ namespace E_Shop.Web.Areas.Customer.Controllers
 
             _unitOfWork.ShoppingCart.IncreaseCount(shoppingcart, 1);
             _unitOfWork.Save();
+            var totalCount = _unitOfWork.ShoppingCart
+            .GetAll(x => x.ApplicationUserId == shoppingcart.ApplicationUserId)
+            .Sum(x => x.Count);  // Sum all the item counts in the cart
+            HttpContext.Session.SetInt32(SD.SessionKey, totalCount);
 
             return RedirectToAction("Index");
         }
@@ -58,16 +62,28 @@ namespace E_Shop.Web.Areas.Customer.Controllers
 
             if (shoppingcart.Count <= 1)
             {
+                // Remove the item from the cart if its quantity is 1 or less
                 _unitOfWork.ShoppingCart.Remove(shoppingcart);
                 _unitOfWork.Save();
-                return RedirectToAction("Index","Home");
-            } 
+            }
             else
             {
+                // Decrease the count of the item by 1
                 _unitOfWork.ShoppingCart.DecreaseCount(shoppingcart, 1);
+                _unitOfWork.Save();
             }
 
-            _unitOfWork.Save();
+            // Update the session with the correct total item count in the cart
+            var totalCount = _unitOfWork.ShoppingCart
+                .GetAll(x => x.ApplicationUserId == shoppingcart.ApplicationUserId)
+                .Sum(x => x.Count);  // Sum all the item counts in the cart
+            HttpContext.Session.SetInt32(SD.SessionKey, totalCount);
+
+            // Redirect back to the shopping cart index or home
+            if (totalCount == 0)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return RedirectToAction("Index");
         }
 
@@ -76,6 +92,9 @@ namespace E_Shop.Web.Areas.Customer.Controllers
             var shoppingcart = _unitOfWork.ShoppingCart.Get(x => x.Id == cartid);
             _unitOfWork.ShoppingCart.Remove(shoppingcart);
             _unitOfWork.Save();
+
+            var count = _unitOfWork.ShoppingCart.GetAll(x => x.ApplicationUserId == shoppingcart.ApplicationUserId).ToList().Count();
+            HttpContext.Session.SetInt32(SD.SessionKey, count);
             return RedirectToAction("Index");
         }
 
