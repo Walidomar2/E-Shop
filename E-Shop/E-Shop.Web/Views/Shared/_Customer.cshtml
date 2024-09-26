@@ -29,7 +29,14 @@
                    
                         @if (User.Identity.IsAuthenticated)
                         {
-                        <li class="nav-item dropdown">
+                            @if(User.IsInRole(SD.Admin))
+                        {
+                                    <li class="nav-item"><a class="nav-link active" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+
+                        }
+                        else
+                        {
+                          <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">My Settings</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" asp-area="Customer" asp-controller="Cart" asp-action="Index">My Order</a></li>
@@ -37,6 +44,9 @@
                                 <li><a class="dropdown-item" asp-area="Identity" asp-controller="Account" asp-action="Manage">Edit Profile</a></li>
                             </ul>
                         </li>
+                            
+                        }
+                       
                         }
                 </ul>
                 <partial name="_LoginPartial"/>
